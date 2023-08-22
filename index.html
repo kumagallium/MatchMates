@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グループマッチング</title>
+    <!-- Vuetify CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+
+<div id="app">
+    <v-app>
+        <v-container>
+            <v-row>
+                <v-col cols="6">
+                    <v-textarea label="グループAのメンバー" v-model="groupA" placeholder="メンバーをコンマ区切りで入力してください。"></v-textarea>
+                </v-col>
+                <v-col cols="6">
+                    <v-textarea label="グループBのメンバー" v-model="groupB" placeholder="メンバーをコンマ区切りで入力してください。"></v-textarea>
+                </v-col>
+			</v-row>
+			<v-row>
+                <v-col cols="12" class="text-center">
+                    <v-btn @click="performMatching" color="primary">マッチングを実行</v-btn>
+                </v-col>
+			</v-row>
+			<v-row>
+                <v-col cols="12" v-if="pairs.length">
+                    <h3>ペア:</h3>
+                    <v-list>
+                        <v-list-item-group v-for="pair in pairs" :key="pair.toString()">
+                            <v-list-item>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ pair.join(' と ') }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                    <v-list>
+                        <v-list-item-group v-for="group in threePersonGroups" :key="group.toString()">
+                            <v-list-item>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ group.join(', ') }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+            groupA: 'am, kd, tk, pk, st',
+            groupB: 'km, nd, tm, mr, sn',
+            pairs: [],
+            threePersonGroups: []
+        },
+        methods: {
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            },
+            performMatching() {
+				this.pairs = []
+				this.threePersonGroups = []
+                let groupA = this.groupA.split(',').map(item => item.trim());
+                let groupB = this.groupB.split(',').map(item => item.trim());
+
+                this.shuffleArray(groupA);
+                this.shuffleArray(groupB);
+
+                while (groupA.length && groupB.length) {
+                    if (groupA.length === 1 || groupB.length === 1) {
+                        break;
+                    }
+                    this.pairs.push([groupA.pop(), groupB.pop()]);
+                }
+
+                while (groupA.length > 1) {
+                    this.threePersonGroups.push([groupA.pop(), groupA.pop()]);
+                }
+                while (groupB.length > 1) {
+                    this.threePersonGroups.push([groupB.pop(), groupB.pop()]);
+                }
+
+                if (groupA.length) {
+                    if (this.threePersonGroups.length) {
+                        let group = this.threePersonGroups.pop();
+                        group.push(groupA.pop());
+                        this.threePersonGroups.push(group);
+                    } else {
+                        this.threePersonGroups.push([groupA.pop()]);
+                    }
+                }
+                if (groupB.length) {
+                    if (this.threePersonGroups.length) {
+                        let group = this.threePersonGroups.pop();
+                        group.push(groupB.pop());
+                        this.threePersonGroups.push(group);
+                    } else {
+                        this.threePersonGroups.push([groupB.pop()]);
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
