@@ -22,6 +22,33 @@
         </v-toolbar>
         <v-container :style="{ 'padding-top': '120px' }">
 			<h1>ClusterCreating</h1>
+            <v-row>
+                <v-col cols="12">
+                    <v-textarea label="Members" v-model="members" placeholder="Please enter all members separated by commas." class="mt-5 pa-2" outlined></v-textarea>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" md="4">
+                    <v-text-field label="Number of Groups" v-model="numGroups" type="number" class="pa-2" outlined></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="text-center">
+                    <v-btn @click="generateGroups"  class="grey darken-2 white--text">Generate Groups</v-btn>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12/group" v-for="(group,index) in groups" :key="group.toString()">
+                    <v-card>
+                        <v-card-title class="grey darken-2 white--text">
+                            Group {{ index + 1 }}
+                        </v-card-title>
+                        <v-card-text class="pa-4" color="black">
+                            {{ group.join(', ') }}
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
         </v-container>
     </v-app>
 </div>
@@ -39,7 +66,10 @@
         vuetify: new Vuetify(),
         data: {
 			seed: new Date().getDate(),
-			currentDate: new Date()
+			currentDate: new Date(),
+            members: 'am, kd, tk, pk, st, km, nd, tm, mr, sn, eg',
+            numGroups: 3,
+            groups: []
         },
 		computed: {
 			formattedDate: function() {
@@ -48,7 +78,27 @@
 			}
 		},
         methods: {
-        }
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(seededRandom(this.seed) * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            },
+            generateGroups() {
+                let membersArray = this.members.split(',').map(item => item.trim());
+                this.shuffleArray(membersArray);
+
+                this.groups = [];
+                const groupSize = Math.ceil(membersArray.length / this.numGroups);
+
+                for (let i = 0; i < this.numGroups; i++) {
+                    this.groups.push(membersArray.splice(0, groupSize));
+                }
+            }
+        },
+		mounted() {
+			this.generateGroups();
+		}
     });
 </script>
 </body>
