@@ -29,7 +29,7 @@
 			</v-row>
 			<v-row>
                 <v-col cols="12" class="text-center">
-                    <v-btn @click="performMatching" color="primary">Execute Matching</v-btn>
+                    <v-btn @click="performMatching" class="grey darken-2 white--text">Execute Matching</v-btn>
                 </v-col>
 			</v-row>
 			<v-row>
@@ -37,7 +37,7 @@
 				<v-col cols="4" v-if="pairs.length">
 					<v-card class="mt-5">
 						<v-card-title class="grey darken-2 white--text">Pairs ({{formattedDate}}):</v-card-title>
-						<v-list>
+						<v-list disabled>
 							<v-list-item-group v-for="pair in pairs" :key="pair.toString()">
 								<v-list-item>
 									<v-list-item-content class="text-center">
