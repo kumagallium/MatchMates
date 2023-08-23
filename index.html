@@ -97,8 +97,8 @@
                 }
             },
             performMatching() {
-				this.pairs = []
-				this.threePersonGroups = []
+				this.pairs = [];
+				this.threePersonGroups = [];
                 let groupA = this.groupA.split(',').map(item => item.trim());
                 let groupB = this.groupB.split(',').map(item => item.trim());
 
@@ -138,7 +138,10 @@
                     }
                 }
             }
-        }
+        },
+		mounted() {
+			this.performMatching();
+		}
     });
 </script>
 </body>

@@ -22,6 +22,41 @@
         </v-toolbar>
         <v-container :style="{ 'padding-top': '120px' }">
 			<h1>UniversalPairing</h1>
+			<v-row>
+                <v-col cols="12">
+                    <v-textarea label="Members" v-model="members" placeholder="Please enter members separated by commas." class="mt-5 pa-2" outlined></v-textarea>
+                </v-col>
+			</v-row>
+			<v-row>
+                <v-col cols="12" class="text-center">
+                    <v-btn @click="performMatching" color="primary">Execute Matching</v-btn>
+                </v-col>
+			</v-row>
+			<v-row>
+				<v-spacer></v-spacer>
+				<v-col cols="4" v-if="pairs.length">
+					<v-card class="mt-5">
+						<v-card-title class="grey darken-2 white--text">Pairs ({{formattedDate}}):</v-card-title>
+						<v-list>
+							<v-list-item-group v-for="pair in pairs" :key="pair.toString()">
+								<v-list-item>
+									<v-list-item-content class="text-center">
+										<v-list-item-title>{{ pair.join(' - ') }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list-item-group>
+							<v-list-item-group v-for="group in threePersonGroups" :key="group.toString()">
+								<v-list-item>
+									<v-list-item-content class="text-center">
+										<v-list-item-title>{{ group.join(' - ') }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list-item-group>
+						</v-list>
+					</v-card>
+				</v-col>
+				<v-spacer></v-spacer>
+			</v-row>
         </v-container>
     </v-app>
 </div>
@@ -38,6 +73,9 @@
         el: '#app',
         vuetify: new Vuetify(),
         data: {
+            members: 'km, nd, tm, mr, sn',
+            pairs: [],
+			threePersonGroups: [],
 			seed: new Date().getDate(),
 			currentDate: new Date()
         },
@@ -48,7 +86,37 @@
 			}
 		},
         methods: {
-        }
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(seededRandom(this.seed) * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            },
+            performMatching() {
+				this.pairs = [];
+				this.threePersonGroups = [];
+                let membersArray = this.members.split(',').map(item => item.trim());
+
+                this.shuffleArray(membersArray);
+
+                while (membersArray.length > 1) {
+                    this.pairs.push([membersArray.pop(), membersArray.pop()]);
+                }
+
+                if (membersArray.length) {
+                    if (this.pairs.length) {
+                        let lastPair = this.pairs.pop();
+                        lastPair.push(membersArray.pop());
+                        this.threePersonGroups.push(lastPair);
+                    } else {
+                        this.threePersonGroups.push([membersArray.pop()]);
+                    }
+                }
+            }
+        },
+		mounted() {
+			this.performMatching();
+		}
     });
 </script>
 </body>
