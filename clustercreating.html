@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchMates</title>
+    <!-- Vuetify CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.7.1/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+
+<div id="app">
+    <v-app>
+		<v-toolbar color="grey darken-3" width="100%" absolute dark>
+            <v-toolbar-title>MatchMates</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn text :href="'./index.html'">Group Guard Pairing</v-btn>
+            <v-btn text :href="'./universalpairing.html'">Universal Pairing</v-btn>
+            <v-btn text :href="'./clustercreating.html'">Cluster Creating</v-btn>
+        </v-toolbar>
+        <v-container :style="{ 'padding-top': '120px' }">
+			<h1>ClusterCreating</h1>
+        </v-container>
+    </v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.7.1/dist/vuetify.js"></script>
+<script>
+	function seededRandom(seed) {
+        var x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+			seed: new Date().getDate(),
+			currentDate: new Date()
+        },
+		computed: {
+			formattedDate: function() {
+				// Format the date in the format 'YYYY-MM-DD'
+				return this.currentDate.toISOString().split('T')[0];
+			}
+		},
+        methods: {
+        }
+    });
+</script>
+</body>
+</html>

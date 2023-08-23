@@ -3,59 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Matching</title>
+    <title>MatchMates</title>
     <!-- Vuetify CDN -->
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.7.1/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 <body>
 
 <div id="app">
     <v-app>
-        <v-container>
+		<v-toolbar color="grey darken-3" width="100%" absolute dark>
+            <v-toolbar-title>MatchMates</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn text :href="'./index.html'">Group Guard Pairing</v-btn>
+            <v-btn text :href="'./universalpairing.html'">Universal Pairing</v-btn>
+            <v-btn text :href="'./clustercreating.html'">Cluster Creating</v-btn>
+        </v-toolbar>
+        <v-container :style="{ 'padding-top': '120px' }">
+			<h1>GroupGuardPairing</h1>
             <v-row>
                 <v-col cols="6">
-                    <v-textarea label="Group A members" v-model="groupA" placeholder="Please enter members separated by commas."></v-textarea>
+                    <v-textarea label="Group A members" v-model="groupA" placeholder="Please enter members separated by commas." class="mt-5 pa-2" outlined></v-textarea>
                 </v-col>
                 <v-col cols="6">
-                    <v-textarea label="Group B members" v-model="groupB" placeholder="Please enter members separated by commas."></v-textarea>
+                    <v-textarea label="Group B members" v-model="groupB" placeholder="Please enter members separated by commas." class="mt-5 pa-2" outlined></v-textarea>
                 </v-col>
 			</v-row>
 			<v-row>
                 <v-col cols="12" class="text-center">
-                    <v-btn @click="performMatching" color="primary">Execute Matching</v-btn>
+                    <v-btn @click="performMatching"  class="grey darken-2 white--text">Execute Matching</v-btn>
                 </v-col>
 			</v-row>
 			<v-row>
-                <v-col cols="12" v-if="pairs.length">
-                    <h3>Pairs:</h3>
-                    <v-list>
-                        <v-list-item-group v-for="pair in pairs" :key="pair.toString()">
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-list-item-title>{{ pair.join(', ') }}</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
-                    <v-list>
-                        <v-list-item-group v-for="group in threePersonGroups" :key="group.toString()">
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-list-item-title>{{ group.join(', ') }}</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
+				<v-spacer></v-spacer>
+                <v-col cols="4" v-if="pairs.length">
+					<v-card class="mt-5">
+						<v-card-title class="grey darken-2 white--text">Pairs ({{formattedDate}}):</v-card-title>
+						<v-list disabled>
+							<v-list-item-group v-for="pair in pairs" :key="pair.toString()">
+								<v-list-item>
+									<v-list-item-content class="text-center">
+										<v-list-item-title>{{ pair.join(' - ') }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list-item-group>
+							<v-list-item-group v-for="group in threePersonGroups" :key="group.toString()">
+								<v-list-item>
+									<v-list-item-content class="text-center">
+										<v-list-item-title>{{ group.join(' - ') }}</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list-item-group>
+						</v-list>
+					</v-card>
                 </v-col>
+				<v-spacer></v-spacer>
             </v-row>
         </v-container>
     </v-app>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.7.1/dist/vuetify.js"></script>
 <script>
 	function seededRandom(seed) {
         var x = Math.sin(seed++) * 10000;
@@ -67,11 +77,18 @@
         vuetify: new Vuetify(),
         data: {
             groupA: 'am, kd, tk, pk, st',
-            groupB: 'km, nd, tm, mr, sn',
+            groupB: 'km, nd, tm, mr, sn, eg',
             pairs: [],
             threePersonGroups: [],
-			seed: new Date().getDate()
+			seed: new Date().getDate(),
+			currentDate: new Date()
         },
+		computed: {
+			formattedDate: function() {
+				// Format the date in the format 'YYYY-MM-DD'
+				return this.currentDate.toISOString().split('T')[0];
+			}
+		},
         methods: {
             shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
